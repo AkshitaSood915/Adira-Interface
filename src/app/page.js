@@ -58,74 +58,65 @@ export default function Home() {
       }
     }
   }
-  useEffect(() => {
-    // if (user != JSON.parse(localStorage.getItem("user"))) {
-    const auth = getAuth();
-    const storedUser = localStorage.getItem("user");
-    // getPlan(user);
-    // console.log(storedUser);
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      getPlan(user);
-      // console.log("here,s the plan--", plan);
-    }
-    // }
-    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
-      if (authUser && plan !== "") {
-        await addDataToFireStore(
-          authUser.displayName,
-          authUser.email,
-          plan,
-          authUser.uid
-        );
-        setUser(authUser);
-        // getPlan(user);
+ useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+    if (authUser) {
+      setUser(authUser);
+      localStorage.setItem("user", JSON.stringify(authUser));
 
+      try {
         const firestore = getFirestore();
         const clusterRef = collection(firestore, authUser.uid);
-
-        // Check if the collection with the specified cluster (user.uid) exists
         const clusterSnapshot = await getDocs(clusterRef);
-        // console.log(clusterSnapshot);
-        const existingDoc = clusterSnapshot.docs[0]; // Assuming there's only one document per cluster
+        const existingDoc = clusterSnapshot.docs[0];
+
         if (existingDoc) {
-          // console.log(existingDoc.data().plan);
-          setPlan(existingDoc.data().plan);
+          setPlan(existingDoc.data().plan || "Pro");
         }
-
-        // console.log("he", plan);
-        localStorage.setItem("user", JSON.stringify(authUser));
-      } else {
-        setUser(null);
-        localStorage.removeItem("user");
+      } catch (error) {
+        console.error("Error fetching plan:", error);
       }
-    });
-
-    return () => unsubscribe(); // Unsubscribe the listener on component unmount
-  }, [plan, user]);
-  const signInWithGoogle = async (userPlan) => {
-    // setPlan(userPlan);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      setPlan(userPlan);
-
-      router.push("/");
-    } catch (error) {
-      console.error("error Signing with google ", error);
+    } else {
+      setUser(null);
+      setPlan("");
+      localStorage.removeItem("user");
     }
-  };
+  });
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      router.push("/");
-    } catch (error) {
-      console.error("Error logging out:", error.message);
-    }
-  };
+  return () => unsubscribe();
+}, [auth]);
+
+const signInWithGoogle = async (userPlan) => {
+  const provider = new GoogleAuthProvider();
+
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const loggedInUser = result.user;
+
+    setUser(loggedInUser);
+    setPlan(userPlan);
+
+    localStorage.setItem("user", JSON.stringify(loggedInUser));
+
+    console.log("Signed in:", loggedInUser.email);
+  } catch (error) {
+    console.error("Error signing in with Google:", error);
+  }
+};
+
+const handleLogout = async () => {
+  try {
+    await signOut(auth);
+
+    setUser(null);
+    setPlan("");
+    localStorage.removeItem("user");
+
+    router.push("/");
+  } catch (error) {
+    console.error("Error logging out:", error.message);
+  }
+};
 
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
 
