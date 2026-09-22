@@ -166,7 +166,7 @@ const handleLogout = async () => {
       <div className="navbar-right">
         {!user&&
           <button className="navbar-button " onClick={()=>signInWithGoogle("Pro")}>{`Sign In`}</button>}
-        <button className="navbar-button " onClick={()=>router.push("/aboutus")}>{`About Us ↗`}</button>
+        <button className="navbar-button " onClick={()=>router.push("/aboutus")}>{`How It Works ↗`}</button>
         <button className="navbar-button " onClick={()=>router.push("/adira")}>{`Try Adira ↗`}</button>
         <button className="navbar-button " onClick={()=>router.push("/f&q")}>{`F&Q ↗`}</button>
       </div>
