@@ -8,7 +8,7 @@ export default function Home() {
   const navItems = [
     { name: "Home", link: "/" },
     { name: "Try Adira", link: "/adira" },
-    { name: "About Us", link: "/aboutus" },
+    { name: "How It Works", link: "/howitworks" },
   ];
 
   // Define FAQ data
@@ -135,7 +135,7 @@ export default function Home() {
             color: "transparent",
           }}
         >
-          Common F&Qs
+          Common FAQs
           <span className="absolute left-0 right-0 bottom-0 h-1 bg-gradient-to-r from-transparent to-gray-400"></span>
         </h1>
 
