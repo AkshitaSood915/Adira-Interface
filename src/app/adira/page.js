@@ -287,21 +287,6 @@ export default function GetData() {
               <span className="text-sm text-slate-700	"> 1.0</span>
             </div>
             <div className="navbar-right">
-              <button
-                type="button"
-                onClick={() => {
-                  // handleSubmit()
-                  setShowContactForm(true);
-                }}
-                className={` px-6 py-2 rounded-lg transition-colors w-25 h-10 duration-300 ${
-                  plan == "Premium"
-                    ? "bg-red-500 text-white hover:bg-yellow-600"
-                    : "bg-gray-400 text-gray-600 cursor-not-allowed"
-                }`}
-                disabled={plan == "Pro"}
-              >
-                {plan ? "Contact Us" : "Contact Us (Unavailable)"}
-              </button>
               <div className=" rounded-lg my-2 ">
                 <h1 className="text-3xl font-bold"> {user ? " " : "Guest"} </h1>
                 <a
